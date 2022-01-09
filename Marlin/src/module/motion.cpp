@@ -1728,7 +1728,10 @@ void prepare_line_to_destination() {
       // Only Z homing (with probe) is permitted
       if (axis != Z_AXIS) { BUZZ(100, 880); return; }
     #else
-      #define _CAN_HOME(A) (axis == _AXIS(A) && ( \
+      //BMac MOD: skip immobile axes
+      #define _CAN_HOME(A) (axis == _AXIS(A) \
+        && (A##_MIN_POS != A##_MAX_POS) \
+        && ( \
            ENABLED(A##_SPI_SENSORLESS) \
         || TERN0(HAS_Z_AXIS, TERN0(HOMING_Z_WITH_PROBE, _AXIS(A) == Z_AXIS)) \
         || TERN0(A##_HOME_TO_MIN, A##_MIN_PIN > -1) \
